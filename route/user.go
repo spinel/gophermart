@@ -9,4 +9,7 @@ func (r *Route) initUser() {
 
 	user.POST("/orders", r.controller.Orders)
 	user.GET("/orders", r.controller.OrdersList)
+
+	user.GET("/balance", r.controller.Balance)
+	user.POST("/balance/withdraw", r.controller.Withdraw)
 }

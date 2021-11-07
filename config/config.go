@@ -19,15 +19,8 @@ type Config struct {
 	CorsAllowedAddr     string `envconfig:"CORS_ALLOWED_ADDR"`
 	LogLevel            string `envconfig:"LOG_LEVEL"`
 	PgURL               string `envconfig:"PG_URL"`
-	REDIS_URL           string `envconfig:"REDIS_URL"`
+	RedisURL            string `envconfig:"Redis_URL"`
 	PgMigrationsPath    string `envconfig:"PG_MIGRATIONS_PATH"`
-	MysqlAddr           string `envconfig:"MYSQL_ADDR"`
-	MysqlUser           string `envconfig:"MYSQL_USER"`
-	MysqlPassword       string `envconfig:"MYSQL_PASSWORD"`
-	MysqlDB             string `envconfig:"MYSQL_DB"`
-	MysqlMigrationsPath string `envconfig:"MYSQL_MIGRATIONS_PATH"`
-	GCBucket            string `envconfig:"GC_BUCKET"`
-	JobsPeriod          int    `envconfig:"JOBS_PERIOD"`
 	SessionKey          string `envconfig:"SESSION_KEY"`
 	TransactionSsupport bool   `envconfig:"TRANSACTION_SUPPORT"`
 }
@@ -59,7 +52,7 @@ func Get() *Config {
 }
 
 func initViper() error {
-	viper.AddConfigPath("../configs")
+	viper.AddConfigPath("../../configs")
 	viper.SetConfigType("json")
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()

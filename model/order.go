@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 const (
 	OrderStatusNew        = "NEW"
@@ -18,4 +20,16 @@ type Order struct {
 	Status     string    `json:"status"  pg:"status"`
 	Accural    float64   `json:"accural,omitempty" pg:"accural"`
 	UploadedAt time.Time `json:"uploaded_at" pg:"uploaded_at,notnull"`
+}
+
+type OrderAccural struct {
+	OrderID int
+	Number  string
+}
+
+//ExtOrder is an order response of accural system.
+type ExtOrder struct {
+	Number  string  `json:"order"`
+	Status  string  `json:"status"`
+	Accural float64 `json:"accural"`
 }
