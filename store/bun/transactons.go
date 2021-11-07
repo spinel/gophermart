@@ -42,13 +42,13 @@ func (repo *TransactionPgRepo) Withdraw(ctx context.Context, transaction *model.
 }
 
 // Balance of current user.
-func (repo *TransactionPgRepo) Balance(ctx context.Context, userId int) (float64, error) {
+func (repo *TransactionPgRepo) Balance(ctx context.Context, userID int) (float64, error) {
 	var b model.Transaction
 	err := repo.db.NewSelect().
 		Model(&b).
 		ColumnExpr("SUM(amount) AS balance").
 		Where(notDeleted).
-		Where("? = ?", bun.Ident("user_id"), userId).
+		Where("? = ?", bun.Ident("user_id"), userID).
 		Scan(ctx)
 
 	if err != nil {
