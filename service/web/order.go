@@ -3,10 +3,12 @@ package web
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/spinel/gophermart/model"
 	"github.com/spinel/gophermart/pkg/luhn"
+	"github.com/spinel/gophermart/service/ext"
 	"github.com/spinel/gophermart/store"
 )
 
@@ -14,14 +16,47 @@ import (
 type OrderWebService struct {
 	ctx   context.Context
 	store *store.Store
+	ext   *ext.ExtAccuralService
 }
 
 // NewOrderWebService is an order service.
-func NewOrderWebService(ctx context.Context, store *store.Store) *OrderWebService {
-	return &OrderWebService{
+func NewOrderWebService(ctx context.Context, store *store.Store, extService *ext.ExtAccuralService) *OrderWebService {
+	orderService := &OrderWebService{
 		ctx:   ctx,
 		store: store,
+		ext:   extService,
 	}
+	orderService.workerUpdateStatus(5)
+
+	return orderService
+
+}
+
+func (svc OrderWebService) workerUpdateStatus(interval int) {
+	ctx := context.Background()
+
+	go func() {
+		for now := range time.Tick(time.Second * time.Duration(interval)) {
+			fmt.Println(now)
+
+			newOrders, err := svc.store.Order.GetByStatus(ctx, model.OrderStatusNew)
+			if err != nil {
+				log.Fatalf("error while load new orders: %s", err)
+			}
+
+			for _, order := range newOrders {
+				orderResp, err := svc.ext.OrderStatus(ctx, order.Number)
+				if err != nil {
+					log.Fatalf("external api error: %s", err)
+				}
+				fmt.Println(">>> ", order.Number)
+				fmt.Println(orderResp)
+			}
+
+		}
+	}()
+
+	fmt.Println("YES!")
 }
 
 // Create order service.

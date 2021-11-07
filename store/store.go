@@ -16,8 +16,9 @@ type Store struct {
 	Bun   *bun.DB
 	Redis *redis.RedisDB
 
-	User  UserRepo
-	Order OrderRepo
+	User        UserRepo
+	Order       OrderRepo
+	Transaction TransactionRepo
 }
 
 // New - create store
@@ -53,6 +54,7 @@ func New(cfg *config.Config) (*Store, error) {
 
 		store.User = bun.NewUserRepo(bunDB)
 		store.Order = bun.NewOrderRepo(bunDB)
+		store.Transaction = bun.NewTransactionPgRepo(bunDB)
 	}
 
 	return &store, nil

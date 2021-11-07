@@ -14,7 +14,11 @@ type OrderRepo struct {
 
 // NewOrderPgRepo ...
 func NewOrderRepo(db *DB) *OrderRepo {
-	return &OrderRepo{db: db}
+	orderRepo := &OrderRepo{
+		db: db,
+	}
+
+	return orderRepo
 }
 
 // Create creates new order in Postgres.
@@ -28,6 +32,7 @@ func (repo *OrderRepo) Create(ctx context.Context, order *model.Order) (*model.O
 
 		return nil, err
 	}
+
 	return order, nil
 }
 
@@ -39,6 +44,22 @@ func (repo *OrderRepo) List(ctx context.Context, userID int) ([]model.Order, err
 		Where("? = ?", bun.Ident("user_id"), userID).
 		Where(notDeleted).
 		Order("uploaded_at ASC").
+		Scan(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return orders, nil
+}
+
+// GetByStatus orders list.
+func (repo *OrderRepo) GetByStatus(ctx context.Context, orderStatus string) ([]model.Order, error) {
+	var orders []model.Order
+	err := repo.db.NewSelect().
+		Model(&orders).
+		Where("? = ?", bun.Ident("status"), orderStatus).
+		Where(notDeleted).
 		Scan(ctx)
 
 	if err != nil {

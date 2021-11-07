@@ -16,4 +16,11 @@ type UserRepo interface {
 type OrderRepo interface {
 	Create(ctx context.Context, order *model.Order) (*model.Order, error)
 	List(ctx context.Context, userID int) ([]model.Order, error)
+	GetByStatus(ctx context.Context, orderStatus string) ([]model.Order, error)
+}
+
+// TransactionRepo is a store for transactions.
+type TransactionRepo interface {
+	Create(ctx context.Context, transaction *model.Transaction) (*model.Transaction, error)
+	Balance(ctx context.Context, userId int) (float64, error)
 }
