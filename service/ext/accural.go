@@ -56,7 +56,7 @@ func (ext ExtAccuralService) getJSON(path string, target interface{}) error {
 
 	defer r.Body.Close()
 	if r.StatusCode != 200 {
-		return errors.New("No Content")
+		return errors.New("no Content")
 	}
 
 	body, err := ioutil.ReadAll(r.Body)

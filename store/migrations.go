@@ -17,7 +17,7 @@ func runPgMigrations() error {
 		return nil
 	}
 	if cfg.PgURL == "" {
-		return errors.New("No cfg.PgURL provided")
+		return errors.New("no cfg.PgURL provided")
 	}
 	m, err := migrate.New(
 		cfg.PgMigrationsPath,
