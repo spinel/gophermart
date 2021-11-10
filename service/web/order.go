@@ -26,7 +26,7 @@ func NewOrderWebService(ctx context.Context, store *store.Store, extService *ext
 		store: store,
 		ext:   extService,
 	}
-	orderService.workerUpdateStatus(2)
+	go orderService.workerUpdateStatus(2)
 
 	return orderService
 
@@ -34,9 +34,17 @@ func NewOrderWebService(ctx context.Context, store *store.Store, extService *ext
 
 func (svc OrderWebService) workerUpdateStatus(interval int) {
 	ctx := context.Background()
-	go func() {
-		for now := range time.Tick(time.Second * time.Duration(interval)) {
-			fmt.Println(now)
+	ticker := time.NewTicker(2 * time.Second)
+	defer ticker.Stop()
+	done := make(chan bool)
+
+	for {
+		select {
+		case <-done:
+			fmt.Println("exit!")
+			return
+		case t := <-ticker.C:
+			fmt.Println("get: ", t)
 
 			newOrders, err := svc.store.Order.GetByStatus(ctx, model.OrderStatusNew)
 			if err != nil {
@@ -76,7 +84,8 @@ func (svc OrderWebService) workerUpdateStatus(interval int) {
 				}
 			}
 		}
-	}()
+	}
+
 }
 
 // Create order service.
