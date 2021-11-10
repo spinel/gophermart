@@ -46,14 +46,14 @@ func (repo *TransactionPgRepo) Balance(ctx context.Context, userID int) (float64
 	var b model.Transaction
 	err := repo.db.NewSelect().
 		Model(&b).
-		ColumnExpr("SUM(amount) AS balance").
-		Where(notDeleted).
+		ColumnExpr("SUM(amount) AS amount").
 		Where("? = ?", bun.Ident("user_id"), userID).
+		Where(notDeleted).
 		Scan(ctx)
 
 	if err != nil {
 		return 0, err
 	}
 
-	return b.Balance, nil
+	return b.Amount, nil
 }

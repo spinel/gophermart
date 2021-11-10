@@ -25,3 +25,8 @@ type TransactionService interface {
 type CacheService interface {
 	Do(ctx context.Context, commandName string, args ...interface{}) (reply interface{}, err error)
 }
+
+type MemoryService interface {
+	Add(ctx context.Context, sessionToken string, userID int)
+	Get(ctx context.Context, sessionToken string) int
+}

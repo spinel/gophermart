@@ -8,13 +8,13 @@ import (
 	"github.com/spinel/gophermart/config"
 	"github.com/spinel/gophermart/logger"
 	"github.com/spinel/gophermart/store/bun"
-	"github.com/spinel/gophermart/store/redis"
+	"github.com/spinel/gophermart/store/memory"
 )
 
 // Store main struct
 type Store struct {
-	Bun   *bun.DB
-	Redis *redis.RedisDB
+	Bun      *bun.DB
+	MemoryDB *memory.MemoryDB
 
 	User        UserRepo
 	Order       OrderRepo
@@ -23,11 +23,6 @@ type Store struct {
 
 // New - create store
 func New(cfg *config.Config) (*Store, error) {
-	redisDB, err := redis.Dial(cfg)
-	if err != nil {
-		return nil, fmt.Errorf("redis Dial failed: %w", err)
-	}
-
 	bunDB, err := bun.Dial(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("pgdb.Dial failed: %w", err)
@@ -42,9 +37,7 @@ func New(cfg *config.Config) (*Store, error) {
 	}
 
 	var store Store
-	if redisDB != nil {
-		store.Redis = redisDB
-	}
+	store.MemoryDB = memory.New()
 
 	// Init Postgres repositories
 	if bunDB != nil {

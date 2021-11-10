@@ -29,11 +29,24 @@ func (repo *OrderRepo) Create(ctx context.Context, order *model.Order) (*model.O
 		Exec(ctx)
 
 	if err != nil {
-
 		return nil, err
 	}
 
 	return order, nil
+}
+
+// Update order in Postgres.
+func (repo *OrderRepo) Update(ctx context.Context, order *model.Order) error {
+	_, err := repo.db.NewUpdate().
+		Model(order).
+		WherePK().
+		Exec(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // List of orders of current user.

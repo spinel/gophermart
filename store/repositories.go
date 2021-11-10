@@ -15,6 +15,7 @@ type UserRepo interface {
 // OrderRepo is a store for orders.
 type OrderRepo interface {
 	Create(ctx context.Context, order *model.Order) (*model.Order, error)
+	Update(ctx context.Context, order *model.Order) error
 	List(ctx context.Context, userID int) ([]model.Order, error)
 	GetByStatus(ctx context.Context, orderStatus string) ([]model.Order, error)
 }

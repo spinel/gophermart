@@ -7,6 +7,8 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/pkg/errors"
+	"github.com/spinel/gophermart/pkg/types"
 )
 
 func (ctr *Controller) Orders(c echo.Context) error {
@@ -26,8 +28,14 @@ func (ctr *Controller) Orders(c echo.Context) error {
 func (ctr *Controller) OrdersList(c echo.Context) error {
 	userID := getEchoParamInt(c, "user")
 	orders, err := ctr.services.Order.List(ctr.ctx, userID)
+
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("could not create an order: %w", err))
+		switch {
+		case errors.Cause(err) == types.ErrBadRequest:
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, errors.Wrap(err, "could not create an order"))
+		}
 	}
 
 	return c.JSON(http.StatusOK, orders)

@@ -10,19 +10,20 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	defaultRunAddress       = "localhost:8093"
+	defaultDatabaseURI      = "postgres://postgres:postgres@localhost:5439/postgres?sslmode=disable"
+	defaultPgMigrationsPath = "file://internal/app/repository/pg/migrations"
+)
+
 // Config of app
 type Config struct {
 	JSON *viper.Viper
 
-	HTTPAddr            string `envconfig:"HTTP_ADDR"`
-	URIScheme           string `envconfig:"URI_SCHEME"`
-	CorsAllowedAddr     string `envconfig:"CORS_ALLOWED_ADDR"`
-	LogLevel            string `envconfig:"LOG_LEVEL"`
-	PgURL               string `envconfig:"PG_URL"`
-	RedisURL            string `envconfig:"Redis_URL"`
-	PgMigrationsPath    string `envconfig:"PG_MIGRATIONS_PATH"`
-	SessionKey          string `envconfig:"SESSION_KEY"`
-	TransactionSsupport bool   `envconfig:"TRANSACTION_SUPPORT"`
+	HTTPAddr         string `envconfig:"RUN_ADDRESS"`
+	LogLevel         string `envconfig:"LOG_LEVEL"`
+	PgURL            string `envconfig:"DATABASE_URI"`
+	PgMigrationsPath string `envconfig:"PG_MIGRATIONS_PATH"`
 }
 
 var (
@@ -45,14 +46,30 @@ func Get() *Config {
 		if err := initViper(); err != nil {
 			log.Fatal(err)
 		}
+
+		setDefault(&config)
+
 		fmt.Println("Configuration:", string(configBytes))
 		config.JSON = viper.GetViper()
 	})
 	return &config
 }
 
+func setDefault(c *Config) {
+	if c.HTTPAddr == "" {
+		c.HTTPAddr = defaultRunAddress
+	}
+	if c.PgURL == "" {
+		c.PgURL = defaultDatabaseURI
+	}
+	if c.PgMigrationsPath == "" {
+		c.PgMigrationsPath = defaultPgMigrationsPath
+	}
+
+}
+
 func initViper() error {
-	viper.AddConfigPath("../../configs")
+	viper.AddConfigPath("configs")
 	viper.SetConfigType("json")
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()

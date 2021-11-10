@@ -43,13 +43,9 @@ func (s *Auth) Process(next echo.HandlerFunc) echo.HandlerFunc {
 			sessionToken := cookie.Value
 
 			// We then get the name of the user from our cache, where we set the session token
-			cacheResponse, err := s.services.Cache.Do(ctx, "GET", sessionToken)
-			if err != nil {
-				// If there is an error fetching from cache, return an internal server error status
-				return echo.ErrInternalServerError
-			}
+			cacheResponse := s.services.Memory.Get(ctx, sessionToken)
 
-			if cacheResponse == nil {
+			if cacheResponse < 1 {
 				// If the session token is not present in cache, return an unauthorized error
 				return echo.ErrUnauthorized
 			}

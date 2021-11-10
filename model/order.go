@@ -29,7 +29,7 @@ type OrderAccural struct {
 
 //ExtOrder is an order response of accural system.
 type ExtOrder struct {
-	Number  string  `json:"order"`
+	Order   string  `json:"order"`
 	Status  string  `json:"status"`
 	Accural float64 `json:"accural"`
 }

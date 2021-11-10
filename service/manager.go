@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/spinel/gophermart/service/cache"
 	"github.com/spinel/gophermart/service/ext"
+	"github.com/spinel/gophermart/service/memory"
 	"github.com/spinel/gophermart/service/web"
 	"github.com/spinel/gophermart/store"
 )
@@ -15,7 +15,7 @@ type Manager struct {
 	User        UserService
 	Order       OrderService
 	Transaction TransactionService
-	Cache       CacheService
+	Memory      MemoryService
 }
 
 // NewManager creates new service manager
@@ -30,6 +30,6 @@ func NewManager(ctx context.Context, store *store.Store) (*Manager, error) {
 		User:        web.NewUserWebService(ctx, store),
 		Order:       web.NewOrderWebService(ctx, store, extService),
 		Transaction: web.NewTransactionWebService(ctx, store),
-		Cache:       cache.NewCacheService(ctx, store),
+		Memory:      memory.NewMemoryService(ctx, store),
 	}, nil
 }

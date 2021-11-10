@@ -62,10 +62,7 @@ func (ctr *Controller) UserLogin(c echo.Context) error {
 	sessionToken := createSessionToken()
 
 	// Set the token in the cache, along with the user whom it represents
-	// The token has an expiry time of 120 seconds
-	if _, err := ctr.services.Cache.Do(ctr.ctx, "SETEX", sessionToken, "1200", user.ID); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("set session cache error: %w", err))
-	}
+	ctr.services.Memory.Add(ctr.ctx, sessionToken, user.ID)
 
 	// Finally, we set the client cookie for "session_token" as the session token we just generated
 	// we also set an expiry time of 120 seconds, the same as the cache

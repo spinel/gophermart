@@ -8,10 +8,10 @@ CREATE TABLE IF NOT EXISTS transactions (
     order_id integer not null,
     amount decimal(12,2) default '0.00',
     type transaction_type default 'refill',
-	uploaded_at timestamp,
     created_at timestamp,
 	updated_at timestamp,
-	deleted_at timestamp
+	deleted_at timestamp,
+    UNIQUE (user_id, order_id)
 );
 
 COMMIT;

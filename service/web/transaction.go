@@ -2,7 +2,10 @@ package web
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log"
+	"strconv"
 
 	"github.com/spinel/gophermart/model"
 	"github.com/spinel/gophermart/store"
@@ -27,8 +30,6 @@ func (svc TransactionWebService) Create(ctx context.Context, userID int, orderNu
 	transaction := &model.Transaction{
 		OrderID: 1,
 		UserID:  userID,
-		Status:  model.OrderStatusNew,
-		//Number:  orderNumber,
 	}
 
 	result, err := svc.store.Transaction.Create(ctx, transaction)
@@ -50,20 +51,38 @@ func (svc TransactionWebService) Balance(ctx context.Context, userID int) (float
 }
 
 // Withdraw by order transaction.
-func (svc TransactionWebService) Withdraw(ctx context.Context, userID int, order string, amount float64) error {
+func (svc TransactionWebService) Withdraw(ctx context.Context, userID int, orderStr string, amount float64) error {
 	balance, err := svc.store.Transaction.Balance(ctx, userID)
 	if err != nil {
-		return fmt.Errorf("svc.Transaction.Balance error: %w", err)
+		return fmt.Errorf("svc.Transaction.Withdraw ифдфтсуerror: %w", err)
 	}
 
 	if balance < amount {
-		return fmt.Errorf("svc.Transaction.Balance error: %w", err)
+		return errors.New("balance amount not enough")
 	}
 
-	_ = &model.Transaction{
+	orderNumber, _ := strconv.Atoi(orderStr)
+
+	order := &model.Order{
+		UserID: userID,
+		Status: model.OrderStatusProcessed,
+		Number: orderNumber,
+	}
+
+	orderNew, err := svc.store.Order.Create(ctx, order)
+	if err != nil {
+		return fmt.Errorf("svc.Transaction.Withdraw error: %w", err)
+	}
+
+	transaction := &model.Transaction{
 		UserID:  userID,
-		OrderID: 1,
+		OrderID: orderNew.ID,
 		Amount:  amount,
+	}
+
+	_, err = svc.store.Transaction.Create(ctx, transaction)
+	if err != nil {
+		log.Fatalf("error while create new transaction: %s", err)
 	}
 
 	return nil
