@@ -39,7 +39,7 @@ func (ext ExtAccuralService) OrderStatus(ctx context.Context, number int) (model
 	var order model.ExtOrder
 
 	requestPath := fmt.Sprintf("%s/%d", PathOrderStatus, number)
-	err := ext.getJson(requestPath, &order)
+	err := ext.getJSON(requestPath, &order)
 	if err != nil {
 		log.Printf("external api: %s", err)
 	}
@@ -47,7 +47,7 @@ func (ext ExtAccuralService) OrderStatus(ctx context.Context, number int) (model
 	return order, nil
 }
 
-func (ext ExtAccuralService) getJson(path string, target interface{}) error {
+func (ext ExtAccuralService) getJSON(path string, target interface{}) error {
 	requestURL := fmt.Sprintf("%s/%s", ext.address, path)
 	r, err := ext.client.Get(requestURL)
 	if err != nil {
