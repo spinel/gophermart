@@ -22,7 +22,7 @@ func (ctr *Controller) Orders(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("could not create an order: %w", err))
 	}
 
-	return c.JSON(http.StatusOK, createdOrder)
+	return c.JSON(http.StatusAccepted, createdOrder)
 }
 
 func (ctr *Controller) OrdersList(c echo.Context) error {
