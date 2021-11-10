@@ -21,7 +21,7 @@ type Manager struct {
 // NewManager creates new service manager
 func NewManager(ctx context.Context, store *store.Store) (*Manager, error) {
 	if store == nil {
-		return nil, fmt.Errorf("No store provided")
+		return nil, fmt.Errorf("no store provided")
 	}
 
 	extService := ext.NewOrderWebService(ctx, "http://localhost:8080")
