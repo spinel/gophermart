@@ -38,16 +38,17 @@ func Get() *Config {
 		if err != nil {
 			log.Fatal(err)
 		}
-		configBytes, err := json.MarshalIndent(config, "", "  ")
-		if err != nil {
-			log.Fatal(err)
-		}
 
 		if err := initViper(); err != nil {
 			log.Fatal(err)
 		}
 
 		setDefault(&config)
+
+		configBytes, err := json.MarshalIndent(config, "", "  ")
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		fmt.Println("Configuration:", string(configBytes))
 		config.JSON = viper.GetViper()
