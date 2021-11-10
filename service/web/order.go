@@ -26,7 +26,7 @@ func NewOrderWebService(ctx context.Context, store *store.Store, extService *ext
 		store: store,
 		ext:   extService,
 	}
-	go orderService.workerUpdateStatus(5)
+	orderService.workerUpdateStatus(2)
 
 	return orderService
 
@@ -34,48 +34,49 @@ func NewOrderWebService(ctx context.Context, store *store.Store, extService *ext
 
 func (svc OrderWebService) workerUpdateStatus(interval int) {
 	ctx := context.Background()
+	go func() {
+		for now := range time.Tick(time.Second * time.Duration(interval)) {
+			fmt.Println(now)
 
-	for now := range time.Tick(time.Second * time.Duration(interval)) {
-		fmt.Println(now)
-
-		newOrders, err := svc.store.Order.GetByStatus(ctx, model.OrderStatusNew)
-		if err != nil {
-			log.Fatalf("error while load new orders: %s", err)
-		}
-
-		for _, order := range newOrders {
-			orderResp, err := svc.ext.OrderStatus(ctx, order.Number)
+			newOrders, err := svc.store.Order.GetByStatus(ctx, model.OrderStatusNew)
 			if err != nil {
-				log.Fatalf("external api error: %s", err)
-				continue
+				log.Fatalf("error while load new orders: %s", err)
 			}
 
-			if orderResp.Order != "" {
-				// set updated data
-				//				order.Accural = orderResp.Accural
-				order.Accural = 55
-				order.Status = orderResp.Status
-
-				// update order db
-				err := svc.store.Order.Update(ctx, &order)
+			for _, order := range newOrders {
+				orderResp, err := svc.ext.OrderStatus(ctx, order.Number)
 				if err != nil {
-					log.Fatalf("error while update order(%d): %s", order.Number, err)
+					log.Fatalf("external api error: %s", err)
+					continue
 				}
 
-				transaction := &model.Transaction{
-					OrderID: order.ID,
-					UserID:  order.UserID,
-					Amount:  order.Accural,
-					Type:    model.TransactionTypeRefill,
-				}
+				if orderResp.Order != "" {
+					// set updated data
+					//				order.Accural = orderResp.Accural
+					order.Accural = 55
+					order.Status = orderResp.Status
 
-				_, err = svc.store.Transaction.Create(ctx, transaction)
-				if err != nil {
-					log.Fatalf("error while create new transaction: %s", err)
+					// update order db
+					err := svc.store.Order.Update(ctx, &order)
+					if err != nil {
+						log.Fatalf("error while update order(%d): %s", order.Number, err)
+					}
+
+					transaction := &model.Transaction{
+						OrderID: order.ID,
+						UserID:  order.UserID,
+						Amount:  order.Accural,
+						Type:    model.TransactionTypeRefill,
+					}
+
+					_, err = svc.store.Transaction.Create(ctx, transaction)
+					if err != nil {
+						log.Fatalf("error while create new transaction: %s", err)
+					}
 				}
 			}
 		}
-	}
+	}()
 }
 
 // Create order service.
