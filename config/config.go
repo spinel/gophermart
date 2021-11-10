@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	defaultRunAddress       = "localhost:8093"
+	defaultRunAddress       = "localhost:8080"
 	defaultDatabaseURI      = "postgres://postgres:postgres@localhost:5439/postgres?sslmode=disable"
 	defaultPgMigrationsPath = "file://internal/app/repository/pg/migrations"
 )
