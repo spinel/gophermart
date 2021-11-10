@@ -23,5 +23,5 @@ type OrderRepo interface {
 // TransactionRepo is a store for transactions.
 type TransactionRepo interface {
 	Create(ctx context.Context, transaction *model.Transaction) (*model.Transaction, error)
-	Balance(ctx context.Context, userId int) (float64, error)
+	Balance(ctx context.Context, userID int) (float64, error)
 }
