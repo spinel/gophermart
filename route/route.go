@@ -12,8 +12,6 @@ type Route struct {
 	ctx        context.Context
 	controller *controller.Controller
 	Echo       *echo.Echo
-
-	api *echo.Group
 }
 
 // New Route
