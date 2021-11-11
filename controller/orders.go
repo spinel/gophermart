@@ -21,6 +21,10 @@ func (ctr *Controller) Orders(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("could not create an order: %w", err))
 	}
 
+	if createdOrder == nil {
+		return c.JSON(http.StatusNoContent, "")
+	}
+
 	return c.JSON(http.StatusAccepted, createdOrder)
 }
 
