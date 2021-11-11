@@ -18,6 +18,7 @@ type OrderRepo interface {
 	Update(ctx context.Context, order *model.Order) error
 	List(ctx context.Context, userID int) ([]model.Order, error)
 	GetByStatus(ctx context.Context, orderStatus string) ([]model.Order, error)
+	GetByNumber(ctx context.Context, orderNumber string) (*model.Order, error)
 }
 
 // TransactionRepo is a store for transactions.

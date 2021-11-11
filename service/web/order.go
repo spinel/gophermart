@@ -98,6 +98,13 @@ func (svc OrderWebService) Create(ctx context.Context, userID int, orderNumber s
 		return nil, errors.Wrap(types.ErrUnprocessableEntity, fmt.Sprintf("luhn validation failed: %s", orderNumber))
 	}
 
+	orderCheck, err := svc.store.Order.GetByNumber(ctx, orderNumber)
+	if orderCheck != nil {
+		if orderCheck.UserID == userID {
+			return nil, errors.Wrap(types.StatusOK, fmt.Sprintf("duplicate: %s", orderNumber))
+		}
+	}
+
 	order := &model.Order{
 		UserID:     userID,
 		Status:     model.OrderStatusNew,
@@ -107,7 +114,7 @@ func (svc OrderWebService) Create(ctx context.Context, userID int, orderNumber s
 
 	result, err := svc.store.Order.Create(ctx, order)
 	if err != nil {
-		return nil, errors.Wrap(types.StatusOK, fmt.Sprintf("duplicate: %s", orderNumber))
+		return nil, errors.Wrap(types.ErrDuplicateEntry, fmt.Sprintf("duplicate: %s", orderNumber))
 	}
 
 	return result, nil

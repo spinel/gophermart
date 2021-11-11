@@ -5,6 +5,7 @@ import (
 
 	"github.com/spinel/gophermart/model"
 	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/driver/pgdriver"
 )
 
 // OrderPgRepo ...
@@ -80,4 +81,25 @@ func (repo *OrderRepo) GetByStatus(ctx context.Context, orderStatus string) ([]m
 	}
 
 	return orders, nil
+}
+
+// GetByNumber orders list.
+func (repo *OrderRepo) GetByNumber(ctx context.Context, orderNumber string) (*model.Order, error) {
+	var order model.Order
+	err := repo.db.NewSelect().
+		Model(&order).
+		Where("? = ?", bun.Ident("number"), orderNumber).
+		//Where("? = ?", bun.Ident("user_id"), userID).
+		Where(notDeleted).
+		Scan(ctx)
+
+	if err != nil {
+		pqErr := err.(pgdriver.Error)
+		if pqErr.IntegrityViolation() { // duplicate
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &order, nil
 }
