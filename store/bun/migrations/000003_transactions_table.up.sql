@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     created_at timestamp,
 	updated_at timestamp,
 	deleted_at timestamp,
-    UNIQUE (user_id, order_id)
+    UNIQUE (type, order_id)
 );
 
 COMMIT;
