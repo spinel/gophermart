@@ -94,12 +94,11 @@ func (svc OrderWebService) Create(ctx context.Context, userID int, orderNumber s
 	if !luhn.Valid(orderNumber) {
 		return nil, fmt.Errorf("svc.Order.Create error: Luhn validation failed")
 	}
-
 	order := &model.Order{
 		UserID:     userID,
 		Status:     model.OrderStatusNew,
 		Number:     orderNumber,
-		UploadedAt: time.Now().UTC(),
+		UploadedAt: time.Now(),
 	}
 
 	result, err := svc.store.Order.Create(ctx, order)

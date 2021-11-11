@@ -16,9 +16,9 @@ type Order struct {
 	Base
 	ID         int       `json:"-" pg:"id,notnull,pk"`
 	Number     string    `json:"number" validate:"required" pg:"number,unique,notnull"`
-	UserID     int       `json:"user_id" pg:"number,notnull"`
+	UserID     int       `json:"-" pg:"number,notnull"`
 	Status     string    `json:"status"  pg:"status"`
-	Accural    float64   `json:"accural,omitempty" pg:"accural"`
+	Accural    float64   `json:"accural" pg:"accural"`
 	UploadedAt time.Time `json:"uploaded_at" pg:"uploaded_at,notnull"`
 }
 

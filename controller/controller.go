@@ -2,8 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/spinel/gophermart/controller/middleware"
@@ -34,8 +32,9 @@ func New(ctx context.Context, services *service.Manager, logger *logger.Logger) 
 
 func getEchoParamInt(c echo.Context, key string) int {
 	echoParam := c.Get(key)
-	str := fmt.Sprintf("%s", echoParam)
-	value, _ := strconv.Atoi(str)
-
-	return value
+	value, ok := echoParam.(int)
+	if ok {
+		return value
+	}
+	return 0
 }
