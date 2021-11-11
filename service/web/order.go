@@ -26,7 +26,7 @@ func NewOrderWebService(ctx context.Context, store *store.Store, extService *ext
 		store: store,
 		ext:   extService,
 	}
-	go orderService.workerUpdateStatus(2)
+	go orderService.workerUpdateStatus(500)
 
 	return orderService
 
@@ -34,7 +34,7 @@ func NewOrderWebService(ctx context.Context, store *store.Store, extService *ext
 
 func (svc OrderWebService) workerUpdateStatus(interval int) {
 	ctx := context.Background()
-	ticker := time.NewTicker(2 * time.Second)
+	ticker := time.NewTicker(500 * time.Millisecond)
 	defer ticker.Stop()
 	done := make(chan bool)
 
