@@ -14,7 +14,7 @@ const (
 	defaultRunAddress           = "localhost:8080"
 	defaultDatabaseURI          = "postgres://postgres:postgres@localhost:5439/postgres?sslmode=disable"
 	defaultPgMigrationsPath     = "file://store/bun/migrations"
-	defaultAccuralSystemAddress = "localhost:35949"
+	defaultAccuralSystemAddress = "http://localhost:35949"
 )
 
 // Config of app
