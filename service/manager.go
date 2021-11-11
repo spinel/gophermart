@@ -26,7 +26,7 @@ func NewManager(ctx context.Context, store *store.Store) (*Manager, error) {
 	}
 	cfg := config.Get()
 
-	extService := ext.NewOrderWebService(ctx, fmt.Sprintf("http://%s", cfg.AccuralSystemAddress))
+	extService := ext.NewOrderWebService(ctx, cfg.AccuralSystemAddress)
 
 	return &Manager{
 		User:        web.NewUserWebService(ctx, store),
