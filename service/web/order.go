@@ -98,7 +98,7 @@ func (svc OrderWebService) Create(ctx context.Context, userID int, orderNumber s
 		return nil, errors.Wrap(types.ErrUnprocessableEntity, fmt.Sprintf("luhn validation failed: %s", orderNumber))
 	}
 
-	orderCheck, err := svc.store.Order.GetByNumber(ctx, orderNumber)
+	orderCheck, _ := svc.store.Order.GetByNumber(ctx, orderNumber)
 	if orderCheck != nil {
 		if orderCheck.UserID == userID {
 			return nil, errors.Wrap(types.StatusOK, fmt.Sprintf("duplicate: %s", orderNumber))

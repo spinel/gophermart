@@ -5,7 +5,6 @@ import (
 
 	"github.com/spinel/gophermart/model"
 	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/driver/pgdriver"
 )
 
 // OrderPgRepo ...
@@ -94,10 +93,6 @@ func (repo *OrderRepo) GetByNumber(ctx context.Context, orderNumber string) (*mo
 		Scan(ctx)
 
 	if err != nil {
-		pqErr := err.(pgdriver.Error)
-		if pqErr.IntegrityViolation() { // duplicate
-			return nil, nil
-		}
 		return nil, err
 	}
 
