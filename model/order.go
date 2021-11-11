@@ -14,7 +14,7 @@ const (
 // Order is a shop order.
 type Order struct {
 	Base
-	ID         int       `json:"id" pg:"id,notnull,pk"`
+	ID         int       `json:"-" pg:"id,notnull,pk"`
 	Number     string    `json:"number" validate:"required" pg:"number,unique,notnull"`
 	UserID     int       `json:"user_id" pg:"number,notnull"`
 	Status     string    `json:"status"  pg:"status"`

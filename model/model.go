@@ -10,9 +10,9 @@ var Models []interface{}
 
 // Base contains common fields for all tables
 type Base struct {
-	CreatedAt time.Time  `json:"created_at,omitempty" pg:"created_at,notnull"`
-	UpdatedAt time.Time  `json:"updated_at,omitempty" pg:"updated_at,notnull"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty" pg:"deleted_at"`
+	CreatedAt time.Time  `json:"-" pg:"created_at,notnull"`
+	UpdatedAt time.Time  `json:"-" pg:"updated_at,notnull"`
+	DeletedAt *time.Time `json:"-" pg:"deleted_at"`
 }
 
 // BeforeInsert hooks into insert operations, setting createdAt and updatedAt to current time
