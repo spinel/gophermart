@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
@@ -15,7 +14,7 @@ func (ctr *Controller) Orders(c echo.Context) error {
 	userID := getEchoParamInt(c, "user")
 
 	bodyOrderNumber, _ := ioutil.ReadAll(c.Request().Body)
-	orderNumber, _ := strconv.Atoi(string(bodyOrderNumber))
+	orderNumber := string(bodyOrderNumber)
 
 	createdOrder, err := ctr.services.Order.Create(ctr.ctx, userID, orderNumber)
 	if err != nil {

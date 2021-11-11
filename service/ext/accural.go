@@ -35,10 +35,10 @@ func NewOrderWebService(ctx context.Context, address string) *ExtAccuralService 
 }
 
 // OrderStatus external status responseof accural system.
-func (ext ExtAccuralService) OrderStatus(ctx context.Context, number int) (model.ExtOrder, error) {
+func (ext ExtAccuralService) OrderStatus(ctx context.Context, number string) (model.ExtOrder, error) {
 	var order model.ExtOrder
 
-	requestPath := fmt.Sprintf("%s/%d", PathOrderStatus, number)
+	requestPath := fmt.Sprintf("%s/%s", PathOrderStatus, number)
 	err := ext.getJSON(requestPath, &order)
 	if err != nil {
 		log.Printf("external api: %s", err)

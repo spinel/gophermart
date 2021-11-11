@@ -12,7 +12,7 @@ type UserService interface {
 }
 
 type OrderService interface {
-	Create(ctx context.Context, userID int, orderNumber int) (*model.Order, error)
+	Create(ctx context.Context, userID int, orderNumber string) (*model.Order, error)
 	List(ctx context.Context, userID int) ([]model.Order, error)
 }
 

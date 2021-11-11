@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"strconv"
 
 	"github.com/spinel/gophermart/model"
 	"github.com/spinel/gophermart/store"
@@ -51,7 +50,7 @@ func (svc TransactionWebService) Balance(ctx context.Context, userID int) (float
 }
 
 // Withdraw by order transaction.
-func (svc TransactionWebService) Withdraw(ctx context.Context, userID int, orderStr string, amount float64) error {
+func (svc TransactionWebService) Withdraw(ctx context.Context, userID int, orderNumber string, amount float64) error {
 	balance, err := svc.store.Transaction.Balance(ctx, userID)
 	if err != nil {
 		return fmt.Errorf("svc.Transaction.Withdraw ифдфтсуerror: %w", err)
@@ -60,8 +59,6 @@ func (svc TransactionWebService) Withdraw(ctx context.Context, userID int, order
 	if balance < amount {
 		return errors.New("balance amount not enough")
 	}
-
-	orderNumber, _ := strconv.Atoi(orderStr)
 
 	order := &model.Order{
 		UserID: userID,

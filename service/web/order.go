@@ -67,7 +67,7 @@ func (svc OrderWebService) workerUpdateStatus(interval int) {
 					// update order db
 					err := svc.store.Order.Update(ctx, &order)
 					if err != nil {
-						log.Fatalf("error while update order(%d): %s", order.Number, err)
+						log.Fatalf("error while update order(%s): %s", order.Number, err)
 					}
 
 					transaction := &model.Transaction{
@@ -89,7 +89,7 @@ func (svc OrderWebService) workerUpdateStatus(interval int) {
 }
 
 // Create order service.
-func (svc OrderWebService) Create(ctx context.Context, userID int, orderNumber int) (*model.Order, error) {
+func (svc OrderWebService) Create(ctx context.Context, userID int, orderNumber string) (*model.Order, error) {
 	// order number Luhn validation
 	if !luhn.Valid(orderNumber) {
 		return nil, fmt.Errorf("svc.Order.Create error: Luhn validation failed")
