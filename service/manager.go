@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/spinel/gophermart/config"
 	"github.com/spinel/gophermart/service/ext"
 	"github.com/spinel/gophermart/service/memory"
 	"github.com/spinel/gophermart/service/web"
@@ -23,8 +24,9 @@ func NewManager(ctx context.Context, store *store.Store) (*Manager, error) {
 	if store == nil {
 		return nil, fmt.Errorf("no store provided")
 	}
+	cfg := config.Get()
 
-	extService := ext.NewOrderWebService(ctx, "http://localhost:8080")
+	extService := ext.NewOrderWebService(ctx, fmt.Sprintf("http://%s", cfg.AccuralSystemAddress))
 
 	return &Manager{
 		User:        web.NewUserWebService(ctx, store),

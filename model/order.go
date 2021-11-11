@@ -33,3 +33,8 @@ type ExtOrder struct {
 	Status  string  `json:"status"`
 	Accural float64 `json:"accural"`
 }
+
+type BalanceResponse struct {
+	Current   float64 `json:"current"`
+	Withdrawn float64 `json:"withdrawn"`
+}
