@@ -3,7 +3,6 @@ package controller
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/spinel/gophermart/model"
@@ -28,12 +27,7 @@ func (ctr *Controller) Withdraw(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Errorf("could not get body: %w", err))
 	}
 
-	transactionAmount, err := strconv.ParseFloat(transactionRequest.Sum, 64)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Errorf("could not get body: %w", err))
-	}
-
-	err = ctr.services.Transaction.Withdraw(ctr.ctx, userID, transactionRequest.Order, transactionAmount)
+	err := ctr.services.Transaction.Withdraw(ctr.ctx, userID, transactionRequest.Order, transactionRequest.Sum)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("could not get balance: %w", err))
 	}

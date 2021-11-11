@@ -15,6 +15,6 @@ type Transaction struct {
 }
 
 type TransactionRequest struct {
-	Order string `json:"order"`
-	Sum   string `json:"sum"`
+	Order string  `json:"order"`
+	Sum   float64 `json:"sum"`
 }
