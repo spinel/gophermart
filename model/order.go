@@ -18,7 +18,7 @@ type Order struct {
 	Number     string    `json:"number" validate:"required" pg:"number,unique,notnull"`
 	UserID     int       `json:"-" pg:"number,notnull"`
 	Status     string    `json:"status"  pg:"status"`
-	Accural    float64   `json:"accural" pg:"accural"`
+	Accural    float64   `json:"accrual" pg:"accural"`
 	UploadedAt time.Time `json:"uploaded_at" pg:"uploaded_at,notnull"`
 }
 
@@ -31,7 +31,7 @@ type OrderAccural struct {
 type ExtOrder struct {
 	Order   string  `json:"order"`
 	Status  string  `json:"status"`
-	Accural float64 `json:"accural"`
+	Accural float64 `json:"accrual"`
 }
 
 type BalanceResponse struct {
