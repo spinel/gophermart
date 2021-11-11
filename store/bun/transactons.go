@@ -63,7 +63,7 @@ func (repo *TransactionPgRepo) BalanceWidhdraw(ctx context.Context, userID int) 
 	var b model.Transaction
 	err := repo.db.NewSelect().
 		Model(&b).
-		ColumnExpr("SUM(amount) AS amount").
+		ColumnExpr("SUM(abs(amount)) AS amount").
 		Where("? = ?", bun.Ident("type"), model.TransactionTypeWithdraw).
 		Where("? = ?", bun.Ident("user_id"), userID).
 		Where(notDeleted).
