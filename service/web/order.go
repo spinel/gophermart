@@ -107,7 +107,7 @@ func (svc OrderWebService) Create(ctx context.Context, userID int, orderNumber s
 
 	result, err := svc.store.Order.Create(ctx, order)
 	if err != nil {
-		return nil, errors.Wrap(types.ErrDuplicateEntry, fmt.Sprintf("bad request: %s", orderNumber))
+		return nil, errors.Wrap(types.StatusOK, fmt.Sprintf("duplicate: %s", orderNumber))
 	}
 
 	return result, nil

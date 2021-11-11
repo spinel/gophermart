@@ -21,6 +21,7 @@ var (
 	ErrNotAllowed          = errors.New("operation not allowed")
 	ErrBusy                = errors.New("resource is busy")
 	ErrUnauthorized        = errors.New("unauthorized")
+	StatusOK               = errors.New("ok")
 )
 
 // HTTPError is our custom HTTP error to get a proper string output.
@@ -43,6 +44,8 @@ func ErrWrap(err error) int {
 	if err != nil {
 		switch {
 
+		case errors.Cause(err) == StatusOK:
+			return http.StatusOK
 		case errors.Cause(err) == ErrUnprocessableEntity:
 			return http.StatusUnprocessableEntity
 		case errors.Cause(err) == ErrDuplicateEntry:
