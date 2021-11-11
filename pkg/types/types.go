@@ -39,18 +39,17 @@ func HTTPCode(err error) int {
 	return code
 }
 
-func EchoWrap(err error) *echo.HTTPError {
+func ErrWrap(err error) int {
 	if err != nil {
 		switch {
-		case errors.Cause(err) == ErrNotFound:
-			return echo.NewHTTPError(http.StatusNotFound, err)
-		case errors.Cause(err) == ErrBadRequest:
-			return echo.NewHTTPError(http.StatusBadRequest, err)
-		case errors.Cause(err) == ErrConflict:
-			return echo.NewHTTPError(http.StatusConflict, err)
+
+		case errors.Cause(err) == ErrUnprocessableEntity:
+			return http.StatusUnprocessableEntity
+		case errors.Cause(err) == ErrDuplicateEntry:
+			return http.StatusBadRequest
 		default:
-			return echo.NewHTTPError(http.StatusInternalServerError, errors.Wrap(err, "internal error"))
+			return http.StatusInternalServerError
 		}
 	}
-	return nil
+	return 500
 }

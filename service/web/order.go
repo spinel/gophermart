@@ -2,14 +2,18 @@ package web
 
 import (
 	"context"
+
 	"fmt"
 	"log"
 	"time"
 
 	"github.com/spinel/gophermart/model"
 	"github.com/spinel/gophermart/pkg/luhn"
+	"github.com/spinel/gophermart/pkg/types"
 	"github.com/spinel/gophermart/service/ext"
 	"github.com/spinel/gophermart/store"
+
+	"github.com/pkg/errors"
 )
 
 // OrderWebService ...
@@ -44,7 +48,6 @@ func (svc OrderWebService) workerUpdateStatus(interval int) {
 			fmt.Println("exit!")
 			return
 		case t := <-ticker.C:
-			fmt.Println("get: ", t)
 
 			newOrders, err := svc.store.Order.GetByStatus(ctx, model.OrderStatusNew)
 			if err != nil {
@@ -52,6 +55,7 @@ func (svc OrderWebService) workerUpdateStatus(interval int) {
 			}
 
 			for _, order := range newOrders {
+				fmt.Printf("get %s %s\n", t, order.Number)
 				orderResp, err := svc.ext.OrderStatus(ctx, order.Number)
 				if err != nil {
 					log.Fatalf("external api error: %s", err)
@@ -91,8 +95,9 @@ func (svc OrderWebService) workerUpdateStatus(interval int) {
 func (svc OrderWebService) Create(ctx context.Context, userID int, orderNumber string) (*model.Order, error) {
 	// order number Luhn validation
 	if !luhn.Valid(orderNumber) {
-		return nil, fmt.Errorf("svc.Order.Create error: Luhn validation failed")
+		return nil, errors.Wrap(types.ErrUnprocessableEntity, fmt.Sprintf("luhn validation failed: %s", orderNumber))
 	}
+
 	order := &model.Order{
 		UserID:     userID,
 		Status:     model.OrderStatusNew,
@@ -102,7 +107,7 @@ func (svc OrderWebService) Create(ctx context.Context, userID int, orderNumber s
 
 	result, err := svc.store.Order.Create(ctx, order)
 	if err != nil {
-		return nil, fmt.Errorf("svc.Order.Create error: %w", err)
+		return nil, errors.Wrap(types.ErrDuplicateEntry, fmt.Sprintf("bad request: %s", orderNumber))
 	}
 
 	return result, nil
