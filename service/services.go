@@ -18,7 +18,7 @@ type OrderService interface {
 
 type TransactionService interface {
 	Create(ctx context.Context, userID int, orderNumber int) (*model.Transaction, error)
-	Balance(ctx context.Context, userID int) (float64, error)
+	Balance(ctx context.Context, userID int) (*model.BalanceResponse, error)
 	Withdraw(ctx context.Context, userID int, order string, amount float64) error
 }
 

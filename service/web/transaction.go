@@ -40,13 +40,23 @@ func (svc TransactionWebService) Create(ctx context.Context, userID int, orderNu
 }
 
 // Balance of current user.
-func (svc TransactionWebService) Balance(ctx context.Context, userID int) (float64, error) {
-	balance, err := svc.store.Transaction.Balance(ctx, userID)
-	if err != nil {
-		return 0, fmt.Errorf("svc.Transaction.Balance error: %w", err)
-	}
+func (svc TransactionWebService) Balance(ctx context.Context, userID int) (*model.BalanceResponse, error) {
+	var balanceResponse model.BalanceResponse
 
-	return balance, nil
+	balanceCurrent, err := svc.store.Transaction.Balance(ctx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("svc.Transaction.Balance error: %w", err)
+	}
+	balanceWidhdraw, err := svc.store.Transaction.BalanceWidhdraw(ctx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("svc.Transaction.Balance error: %w", err)
+	}
+	fmt.Println(">", balanceWidhdraw)
+
+	balanceResponse.Current = balanceCurrent
+	balanceResponse.Withdrawn = balanceWidhdraw
+
+	return &balanceResponse, nil
 }
 
 // Withdraw by order transaction.

@@ -60,8 +60,7 @@ func (svc OrderWebService) workerUpdateStatus(interval int) {
 
 				if orderResp.Order != "" {
 					// set updated data
-					//				order.Accural = orderResp.Accural
-					order.Accural = 55
+					order.Accural = orderResp.Accural
 					order.Status = orderResp.Status
 
 					// update order db

@@ -57,3 +57,21 @@ func (repo *TransactionPgRepo) Balance(ctx context.Context, userID int) (float64
 
 	return b.Amount, nil
 }
+
+// BalanceWidhdraw of current user.
+func (repo *TransactionPgRepo) BalanceWidhdraw(ctx context.Context, userID int) (float64, error) {
+	var b model.Transaction
+	err := repo.db.NewSelect().
+		Model(&b).
+		ColumnExpr("SUM(amount) AS amount").
+		Where("amount < 0").
+		Where("? = ?", bun.Ident("user_id"), userID).
+		Where(notDeleted).
+		Scan(ctx)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return b.Amount, nil
+}

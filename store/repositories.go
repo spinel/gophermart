@@ -24,4 +24,5 @@ type OrderRepo interface {
 type TransactionRepo interface {
 	Create(ctx context.Context, transaction *model.Transaction) (*model.Transaction, error)
 	Balance(ctx context.Context, userID int) (float64, error)
+	BalanceWidhdraw(ctx context.Context, userID int) (float64, error)
 }
