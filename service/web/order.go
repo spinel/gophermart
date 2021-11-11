@@ -103,6 +103,7 @@ func (svc OrderWebService) Create(ctx context.Context, userID int, orderNumber s
 		if orderCheck.UserID == userID {
 			return nil, errors.Wrap(types.StatusOK, fmt.Sprintf("duplicate: %s", orderNumber))
 		}
+		return nil, errors.Wrap(types.ErrConflict, fmt.Sprintf("duplicate: %s", orderNumber))
 	}
 
 	order := &model.Order{

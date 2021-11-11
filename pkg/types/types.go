@@ -50,6 +50,8 @@ func ErrWrap(err error) int {
 			return http.StatusUnprocessableEntity
 		case errors.Cause(err) == ErrDuplicateEntry:
 			return http.StatusBadRequest
+		case errors.Cause(err) == ErrConflict:
+			return http.StatusConflict
 		default:
 			return http.StatusInternalServerError
 		}
