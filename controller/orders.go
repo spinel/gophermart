@@ -18,7 +18,7 @@ func (ctr *Controller) Orders(c echo.Context) error {
 
 	createdOrder, err := ctr.services.Order.Create(ctr.ctx, userID, orderNumber)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("could not create an order: %w", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Errorf("could not create an order: %w", err))
 	}
 
 	if createdOrder == nil {
