@@ -18,6 +18,7 @@ type Store struct {
 
 	User        UserRepo
 	Order       OrderRepo
+	Preorder    PreorderRepo
 	Transaction TransactionRepo
 }
 
@@ -47,6 +48,7 @@ func New(cfg *config.Config) (*Store, error) {
 
 		store.User = bun.NewUserRepo(bunDB)
 		store.Order = bun.NewOrderRepo(bunDB)
+		store.Preorder = bun.NewPreorderRepo(bunDB)
 		store.Transaction = bun.NewTransactionPgRepo(bunDB)
 	}
 

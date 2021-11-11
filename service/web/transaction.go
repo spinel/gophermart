@@ -63,20 +63,18 @@ func (svc TransactionWebService) Balance(ctx context.Context, userID int) (*mode
 func (svc TransactionWebService) Withdraw(ctx context.Context, userID int, orderNumber string, amount float64) error {
 	balance, err := svc.store.Transaction.Balance(ctx, userID)
 	if err != nil {
-		return fmt.Errorf("svc.Transaction.Withdraw ифдфтсуerror: %w", err)
+		return fmt.Errorf("svc.Transaction.Withdraw error: %w", err)
 	}
 
 	if balance < amount {
 		return errors.New("balance amount not enough")
 	}
-
-	order := &model.Order{
-		UserID: userID,
-		Status: model.OrderStatusProcessed,
+	order := &model.Preorder{
 		Number: orderNumber,
+		Amount: amount,
 	}
 
-	orderNew, err := svc.store.Order.Create(ctx, order)
+	orderNew, err := svc.store.Preorder.Create(ctx, order)
 	if err != nil {
 		return fmt.Errorf("svc.Transaction.Withdraw error: %w", err)
 	}
@@ -84,7 +82,8 @@ func (svc TransactionWebService) Withdraw(ctx context.Context, userID int, order
 	transaction := &model.Transaction{
 		UserID:  userID,
 		OrderID: orderNew.ID,
-		Amount:  amount,
+		Amount:  0 - amount,
+		Type:    model.TransactionTypeWithdraw,
 	}
 
 	_, err = svc.store.Transaction.Create(ctx, transaction)

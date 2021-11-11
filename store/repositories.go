@@ -21,6 +21,10 @@ type OrderRepo interface {
 	GetByNumber(ctx context.Context, orderNumber string) (*model.Order, error)
 }
 
+type PreorderRepo interface {
+	Create(ctx context.Context, order *model.Preorder) (*model.Preorder, error)
+}
+
 // TransactionRepo is a store for transactions.
 type TransactionRepo interface {
 	Create(ctx context.Context, transaction *model.Transaction) (*model.Transaction, error)
